@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+vendor/
+backend/vendor/
+frontend/node_modules/
+composer.phar
+backend/composer.phar
+
+# Environment files & secrets
+.env
+.env.backup
+.env.local
+.env.*.local
+backend/.env
+backend/.env.backup
+backend/.env.production
+frontend/.env.local
+frontend/.env.production.local
+
+# Build & compiled outputs
+.next/
+frontend/.next/
+out/
+frontend/out/
+backend/public/storage
+backend/public/build
+backend/public/hot
+
+# Laravel temporary files & caches
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+!backend/storage/framework/cache/data/.gitignore
+!backend/storage/framework/sessions/.gitignore
+!backend/storage/framework/views/.gitignore
+!backend/storage/logs/.gitignore
+!backend/bootstrap/cache/.gitignore
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

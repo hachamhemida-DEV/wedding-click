@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wed In Click - Hostinger VPS Deployment Guide</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #d4af37;
+      --primary-hover: #e5c158;
+      --code-bg: #0b1120;
+      --border: #334155;
+      --accent: #38bdf8;
+      --success: #10b981;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 2.25rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      margin-top: 0.75rem;
+    }
+    .architecture-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .architecture-box h3 {
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .arch-item {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+    }
+    .arch-item strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    .arch-item span {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .step-header h2 {
+      font-size: 1.35rem;
+      color: var(--text);
+    }
+    h3 {
+      font-size: 1.05rem;
+      color: var(--accent);
+      margin: 1.25rem 0 0.5rem;
+    }
+    p, ul {
+      color: #cbd5e1;
+      margin-bottom: 0.75rem;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.35rem;
+    }
+    .code-container {
+      position: relative;
+      margin: 0.75rem 0 1.25rem;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      color: var(--text);
+      border-color: var(--primary);
+    }
+    .copy-btn.copied {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+    }
+    .alert-box {
+      background: rgba(56, 189, 248, 0.1);
+      border-left: 4px solid var(--accent);
+      padding: 0.85rem 1.25rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-left-color: #f59e0b;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💍 Wed In Click</h1>
+      <p>Hostinger VPS (Ubuntu 22.04 / 24.04) Complete Deployment Guide</p>
+      <div class="badge">Next.js 15 + Laravel 11 + MySQL + Reverb WebSockets</div>
+    </header>
+
+    <div class="architecture-box">
+      <h3>🌐 Recommended Domain Architecture</h3>
+      <p>Assuming your domain is <strong>yourwedding.com</strong>:</p>
+      <div class="arch-grid">
+        <div class="arch-item">
+          <strong>Frontend (Next.js)</strong>
+          <span>https://yourwedding.com</span>
+        </div>
+        <div class="arch-item">
+          <strong>Backend API (Laravel)</strong>
+          <span>https://api.yourwedding.com</span>
+        </div>
+        <div class="arch-item">
+          <strong>WebSockets (Reverb)</strong>
+          <span>wss://api.yourwedding.com</span>
+        </div>
+        <div class="arch-item">
+          <strong>Uploaded Photos</strong>
+          <span>api.yourwedding.com/storage</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <h2>Prepare Project Files Before Uploading</h2>
+      </div>
+      <p>To keep the zip archive light and avoid OS incompatibility, <strong>do not include</strong> generated folders:</p>
+      <ul>
+        <li>❌ <code>frontend/node_modules/</code></li>
+        <li>❌ <code>frontend/.next/</code></li>
+        <li>❌ <code>backend/vendor/</code></li>
+      </ul>
+      <div class="alert-box">
+        All dependencies will be installed with clean Linux builds directly on the VPS.
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <h2>VPS System Setup & Dependencies</h2>
+      </div>
+      <p>Connect to the Hostinger VPS via SSH:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>ssh root@YOUR_VPS_IP</code></pre>
+      </div>
+
+      <h3>1. Update VPS:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo apt update && sudo apt upgrade -y</code></pre>
+      </div>
+
+      <h3>2. Install Nginx, Git, Curl & Tools:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo apt install -y git curl wget unzip zip nginx ufw supervisor</code></pre>
+      </div>
+
+      <h3>3. Install PHP 8.2 & Extensions:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update
+sudo apt install -y php8.2 php8.2-fpm php8.2-mysql php8.2-mbstring php8.2-xml \
+php8.2-curl php8.2-zip php8.2-bcmath php8.2-intl php8.2-tokenizer php8.2-gd php8.2-cli</code></pre>
+      </div>
+
+      <h3>4. Install Composer:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer</code></pre>
+      </div>
+
+      <h3>5. Install Node.js 20 & PM2:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo npm install -g pm2</code></pre>
+      </div>
+
+      <h3>6. Install MySQL:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo apt install -y mysql-server</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <h2>Configure MySQL Database</h2>
+      </div>
+      <p>Log into MySQL terminal:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo mysql</code></pre>
+      </div>
+      <p>Run these SQL queries (replace <code>YourStrongPassword</code>):</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>CREATE DATABASE wedding_click CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'wedding_user'@'localhost' IDENTIFIED BY 'YourStrongPassword';
+GRANT ALL PRIVILEGES ON wedding_click.* TO 'wedding_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <h2>Upload Project to /var/www/</h2>
+      </div>
+      <p>Make sure the project is extracted into <code>/var/www/wedding-click/</code> so you have:</p>
+      <ul>
+        <li><code>/var/www/wedding-click/backend/</code></li>
+        <li><code>/var/www/wedding-click/frontend/</code></li>
+      </ul>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">5</div>
+        <h2>Configure & Deploy Backend (Laravel)</h2>
+      </div>
+      <p>Navigate to backend:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>cd /var/www/wedding-click/backend</code></pre>
+      </div>
+
+      <h3>1. Install PHP packages:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>composer install --no-dev --optimize-autoloader</code></pre>
+      </div>
+
+      <h3>2. Create .env file:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>cp .env.example .env
+nano .env</code></pre>
+      </div>
+      <p>Update with these settings (replace with your real domain and password):</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>APP_NAME="Wed In Click"
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://api.yourwedding.com
+FRONTEND_URL=https://yourwedding.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=wedding_click
+DB_USERNAME=wedding_user
+DB_PASSWORD=YourStrongPassword
+
+SANCTUM_STATEFUL_DOMAINS=yourwedding.com
+
+BROADCAST_CONNECTION=reverb
+FILESYSTEM_DISK=public
+QUEUE_CONNECTION=database
+
+REVERB_APP_ID=123456
+REVERB_APP_KEY=weddingclickkey
+REVERB_APP_SECRET=weddingclicksecret
+REVERB_HOST="127.0.0.1"
+REVERB_PORT=8080
+REVERB_SCHEME=http</code></pre>
+      </div>
+
+      <h3>3. Run migrations, link storage & optimize:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>php artisan key:generate
+php artisan migrate --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache</code></pre>
+      </div>
+
+      <h3>4. Fix folder permissions for photo uploads:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo chown -R www-data:www-data /var/www/wedding-click/backend/storage /var/www/wedding-click/backend/bootstrap/cache
+sudo chmod -R 775 /var/www/wedding-click/backend/storage /var/www/wedding-click/backend/bootstrap/cache</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">6</div>
+        <h2>Run Reverb WebSockets 24/7 (Supervisor)</h2>
+      </div>
+      <p>Create the Supervisor config for Reverb:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo nano /etc/supervisor/conf.d/reverb.conf</code></pre>
+      </div>
+      <p>Paste:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>[program:reverb]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/wedding-click/backend/artisan reverb:start --host=127.0.0.1 --port=8080
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/log/reverb.log</code></pre>
+      </div>
+
+      <p>Start Reverb daemon:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start reverb:*
+sudo supervisorctl status</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">7</div>
+        <h2>Configure & Deploy Frontend (Next.js)</h2>
+      </div>
+      <p>Navigate to frontend:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>cd /var/www/wedding-click/frontend</code></pre>
+      </div>
+
+      <h3>1. Create production environment variables:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>nano .env.production</code></pre>
+      </div>
+      <p>Paste:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>NEXT_PUBLIC_API_URL=https://api.yourwedding.com/api
+NEXT_PUBLIC_REVERB_APP_KEY=weddingclickkey
+NEXT_PUBLIC_REVERB_HOST=api.yourwedding.com
+NEXT_PUBLIC_REVERB_PORT=443
+NEXT_PUBLIC_REVERB_SCHEME=https</code></pre>
+      </div>
+
+      <h3>2. Install packages & build:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>npm install
+npm run build</code></pre>
+      </div>
+
+      <h3>3. Start Next.js with PM2:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>pm2 start npm --name "wedding-frontend" -- start
+pm2 save
+pm2 startup</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">8</div>
+        <h2>Configure Nginx & Free SSL (Let's Encrypt)</h2>
+      </div>
+      <p>Create Nginx configuration:</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo nano /etc/nginx/sites-available/wedding-click</code></pre>
+      </div>
+
+      <p>Paste this Nginx config (replace <code>yourwedding.com</code> and <code>api.yourwedding.com</code>):</p>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code># 1. Frontend (Next.js)
+server {
+    server_name yourwedding.com www.yourwedding.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# 2. Backend API (Laravel) + Reverb WebSockets
+server {
+    server_name api.yourwedding.com;
+    root /var/www/wedding-click/backend/public;
+    index index.php index.html;
+
+    client_max_body_size 50M;
+
+    # Laravel API and storage
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # PHP-FPM
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Reverb WebSocket proxy
+    location /app {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}</code></pre>
+      </div>
+
+      <h3>Enable the site:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo ln -s /etc/nginx/sites-available/wedding-click /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl restart nginx</code></pre>
+      </div>
+
+      <h3>Enable Free SSL:</h3>
+      <div class="code-container">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d yourwedding.com -d www.yourwedding.com -d api.yourwedding.com</code></pre>
+      </div>
+    </div>
+
+    <footer>
+      <p>✨ Wed In Click Deployment Guide • Fully configured for Hostinger VPS</p>
+    </footer>
+  </div>
+
+  <script>
+    function copyCode(button) {
+      const pre = button.nextElementSibling;
+      const code = pre.querySelector('code') ? pre.querySelector('code').innerText : pre.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = button.innerText;
+        button.innerText = 'Copied! ✓';
+        button.classList.add('copied');
+        setTimeout(() => {
+          button.innerText = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Copy failed:', err);
+      });
+    }
+  </script>
+</body>
+</html>
