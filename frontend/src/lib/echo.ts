@@ -6,9 +6,9 @@ if (typeof window !== 'undefined') {
   (window as any).Pusher = Pusher;
 }
 
-let echoInstance: Echo | null = null;
+let echoInstance: Echo<any> | null = null;
 
-export const getEcho = (): Echo | null => {
+export const getEcho = (): Echo<any> | null => {
   if (typeof window === 'undefined') return null;
 
   if (echoInstance) return echoInstance;
