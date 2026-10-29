@@ -1,14 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 import { Search, MapPin, ChevronRight, Star } from 'lucide-react';
 import Image from 'next/image';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 export function Hero() {
   const locale = useLocale();
   const isRtl = locale === 'ar';
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   return (
     <div className="relative w-full min-h-[100vh] flex items-center overflow-hidden">
@@ -113,12 +116,13 @@ export function Hero() {
               {isRtl ? 'تصفح الخدمات' : 'Explorer les services'}
               <ChevronRight className={`w-5 h-5 group-hover:translate-x-1 transition-transform ${isRtl ? 'rotate-180 group-hover:-translate-x-1 group-hover:translate-x-0' : ''}`} />
             </Link>
-            <Link
-              href="/register/vendor"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/30 text-white font-semibold text-lg hover:bg-white/20 hover:border-gold/50 transition-all duration-300"
+            <button
+              type="button"
+              onClick={() => setAuthModalOpen(true)}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/30 text-white font-semibold text-lg hover:bg-white/20 hover:border-gold/50 transition-all duration-300 cursor-pointer"
             >
               {isRtl ? 'انضم كمزود خدمة' : 'Devenir prestataire'}
-            </Link>
+            </button>
           </motion.div>
 
           {/* Trust Stats */}
@@ -202,6 +206,13 @@ export function Hero() {
       {/* Decorative gold corner brackets */}
       <div className="absolute top-24 left-8 w-10 h-10 border-t-2 border-l-2 border-gold/40 hidden lg:block" />
       <div className="absolute top-24 right-8 w-10 h-10 border-t-2 border-r-2 border-gold/40 hidden lg:block" />
+
+      {/* Auth Modal for Vendor Registration */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialView="register-vendor"
+      />
     </div>
   );
 }
