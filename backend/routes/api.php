@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,14 @@ Route::get('/services/{id}/reviews', [\App\Http\Controllers\Api\ReviewController
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/services/upload-image', [\App\Http\Controllers\Api\ServiceImageController::class, 'upload']);
+
+    // Chat / Messages
+    Route::get('/conversations', [ChatController::class, 'getConversations']);
+    Route::post('/conversations', [ChatController::class, 'getOrCreateConversation']);
+    Route::get('/conversations/{id}/messages', [ChatController::class, 'getMessages']);
+    Route::post('/conversations/{id}/messages', [ChatController::class, 'sendMessage']);
 
     // Broadcast Authorization
     \Illuminate\Support\Facades\Broadcast::routes(['middleware' => ['auth:sanctum']]);

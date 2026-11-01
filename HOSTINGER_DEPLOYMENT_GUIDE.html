@@ -206,25 +206,67 @@
     </header>
 
     <div class="architecture-box">
-      <h3>🌐 Recommended Domain Architecture</h3>
-      <p>Assuming your domain is <strong>yourwedding.com</strong>:</p>
+      <h3>🌐 Domain Architecture & Octenium DNS Setup</h3>
+      <p>Configured for domain: <strong>wedinclick.com</strong> (Registrar: <strong>Octenium</strong>) pointing to your <strong>Hostinger VPS</strong>:</p>
       <div class="arch-grid">
         <div class="arch-item">
           <strong>Frontend (Next.js)</strong>
-          <span>https://yourwedding.com</span>
+          <span>https://wedinclick.com</span>
         </div>
         <div class="arch-item">
           <strong>Backend API (Laravel)</strong>
-          <span>https://api.yourwedding.com</span>
+          <span>https://api.wedinclick.com</span>
         </div>
         <div class="arch-item">
           <strong>WebSockets (Reverb)</strong>
-          <span>wss://api.yourwedding.com</span>
+          <span>wss://api.wedinclick.com</span>
         </div>
         <div class="arch-item">
           <strong>Uploaded Photos</strong>
-          <span>api.yourwedding.com/storage</span>
+          <span>api.wedinclick.com/storage</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Step 0: Octenium DNS -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">0</div>
+        <h2>Octenium DNS Configuration (Point Domain to Hostinger VPS)</h2>
+      </div>
+      <p>Log in to your <strong>Octenium Client Area</strong> (Espace Client Octenium) &rarr; <strong>Domaines</strong> &rarr; click on <strong>wedinclick.com</strong> &rarr; <strong>Gestion DNS</strong> (DNS Management / Zone DNS) and add these 3 DNS Records:</p>
+      <table style="width:100%; border-collapse:collapse; margin: 1rem 0; font-size: 0.95rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--border); text-align: left; color: var(--primary);">
+            <th style="padding: 0.5rem;">Type</th>
+            <th style="padding: 0.5rem;">Nom / Hôte</th>
+            <th style="padding: 0.5rem;">Valeur / Cible</th>
+            <th style="padding: 0.5rem;">Rôle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 0.5rem; font-weight: bold; color: var(--accent);">A</td>
+            <td style="padding: 0.5rem;"><code>@</code></td>
+            <td style="padding: 0.5rem;"><code>VOTRE_IP_HOSTINGER_VPS</code></td>
+            <td style="padding: 0.5rem; color: var(--text-muted);">wedinclick.com &rarr; Next.js</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 0.5rem; font-weight: bold; color: var(--accent);">A</td>
+            <td style="padding: 0.5rem;"><code>www</code></td>
+            <td style="padding: 0.5rem;"><code>VOTRE_IP_HOSTINGER_VPS</code></td>
+            <td style="padding: 0.5rem; color: var(--text-muted);">www.wedinclick.com &rarr; Next.js</td>
+          </tr>
+          <tr>
+            <td style="padding: 0.5rem; font-weight: bold; color: var(--accent);">A</td>
+            <td style="padding: 0.5rem;"><code>api</code></td>
+            <td style="padding: 0.5rem;"><code>VOTRE_IP_HOSTINGER_VPS</code></td>
+            <td style="padding: 0.5rem; color: var(--text-muted);">api.wedinclick.com &rarr; Laravel API</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert-box">
+        💡 <em>Note:</em> Remplacez <code>VOTRE_IP_HOSTINGER_VPS</code> par l'adresse IP publique de votre VPS Hostinger (ex: <code>185.xxx.xxx.xxx</code>).
       </div>
     </div>
 
@@ -367,8 +409,8 @@ nano .env</code></pre>
 APP_ENV=production
 APP_KEY=
 APP_DEBUG=false
-APP_URL=https://api.yourwedding.com
-FRONTEND_URL=https://yourwedding.com
+APP_URL=https://api.wedinclick.com
+FRONTEND_URL=https://wedinclick.com
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -377,7 +419,7 @@ DB_DATABASE=wedding_click
 DB_USERNAME=wedding_user
 DB_PASSWORD=YourStrongPassword
 
-SANCTUM_STATEFUL_DOMAINS=yourwedding.com
+SANCTUM_STATEFUL_DOMAINS=wedinclick.com,www.wedinclick.com
 
 BROADCAST_CONNECTION=reverb
 FILESYSTEM_DISK=public
@@ -467,9 +509,9 @@ sudo supervisorctl status</code></pre>
       <p>Paste:</p>
       <div class="code-container">
         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre><code>NEXT_PUBLIC_API_URL=https://api.yourwedding.com/api
+        <pre><code>NEXT_PUBLIC_API_URL=https://api.wedinclick.com/api
 NEXT_PUBLIC_REVERB_APP_KEY=weddingclickkey
-NEXT_PUBLIC_REVERB_HOST=api.yourwedding.com
+NEXT_PUBLIC_REVERB_HOST=api.wedinclick.com
 NEXT_PUBLIC_REVERB_PORT=443
 NEXT_PUBLIC_REVERB_SCHEME=https</code></pre>
       </div>
@@ -507,7 +549,7 @@ pm2 startup</code></pre>
         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre><code># 1. Frontend (Next.js)
 server {
-    server_name yourwedding.com www.yourwedding.com;
+    server_name wedinclick.com www.wedinclick.com;
 
     location / {
         proxy_pass http://127.0.0.1:3000;
@@ -524,7 +566,7 @@ server {
 
 # 2. Backend API (Laravel) + Reverb WebSockets
 server {
-    server_name api.yourwedding.com;
+    server_name api.wedinclick.com;
     root /var/www/wedding-click/backend/public;
     index index.php index.html;
 
@@ -576,7 +618,7 @@ sudo systemctl restart nginx</code></pre>
       <div class="code-container">
         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre><code>sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d yourwedding.com -d www.yourwedding.com -d api.yourwedding.com</code></pre>
+sudo certbot --nginx -d wedinclick.com -d www.wedinclick.com -d api.wedinclick.com</code></pre>
       </div>
     </div>
 

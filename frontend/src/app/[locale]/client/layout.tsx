@@ -7,6 +7,7 @@ import {
   LayoutDashboard, 
   Heart, 
   Calendar,
+  MessageSquare,
   UserCircle, 
   LogOut, 
   ChevronRight,
@@ -26,6 +27,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const navItems = [
     { name: isRtl ? 'لوحة التحكم' : 'Tableau de bord', href: '/client/dashboard', icon: LayoutDashboard },
     { name: isRtl ? 'حجوزاتي' : 'Mes Réservations', href: '/client/bookings', icon: Calendar },
+    { name: isRtl ? 'الرسائل' : 'Messagerie', href: '/client/messages', icon: MessageSquare },
     { name: isRtl ? 'المفضلة' : 'Ma Wishlist', href: '/client/wishlist', icon: Heart },
     { name: isRtl ? 'الملف الشخصي' : 'Profil', href: '/client/profile', icon: UserCircle },
   ];

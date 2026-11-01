@@ -4,8 +4,9 @@ import { useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Loader2, Store, Phone, Mail, Image as ImageIcon, Calendar, X, Check, CalendarDays, PartyPopper, Share2, Award, ShieldCheck, Clock } from 'lucide-react';
+import { MapPin, Loader2, Store, Phone, Mail, Image as ImageIcon, Calendar, X, Check, CalendarDays, PartyPopper, Share2, Award, ShieldCheck, Clock, MessageSquare } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { useAuthStore } from '@/store/authStore';
 import { WishlistButton } from '@/components/shared/WishlistButton';
 import { StarRating } from '@/components/shared/StarRating';
@@ -55,11 +56,13 @@ export default function ServiceDetailsPage() {
   const locale = useLocale();
   const isRtl = locale === 'ar';
   const params = useParams();
+  const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   
   const [service, setService] = useState<ServiceDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [isStartingChat, setIsStartingChat] = useState(false);
 
   // Booking modal state
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -68,6 +71,28 @@ export default function ServiceDetailsPage() {
     event_type: '',
     message: '',
   });
+
+  const handleStartChat = async () => {
+    if (!isAuthenticated) {
+      alert(isRtl ? 'يرجى تسجيل الدخول أولاً للمراسلة' : 'Veuillez vous connecter pour envoyer un message');
+      return;
+    }
+    if (user?.role !== 'client') {
+      alert(isRtl ? 'فقط العملاء يمكنهم بدء محادثة' : 'Seuls les clients peuvent contacter le prestataire');
+      return;
+    }
+    if (!service?.vendor?.id) return;
+    try {
+      setIsStartingChat(true);
+      await api.post('/conversations', { partner_id: service.vendor.id });
+      router.push('/client/messages' as any);
+    } catch (err) {
+      console.error('Failed to initiate conversation', err);
+      router.push('/client/messages' as any);
+    } finally {
+      setIsStartingChat(false);
+    }
+  };
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
@@ -309,6 +334,20 @@ export default function ServiceDetailsPage() {
                 {isRtl ? 'تواصل مع المزود' : 'Contacter le prestataire'}
               </h3>
               <div className="space-y-3 mb-8">
+                <button
+                  type="button"
+                  onClick={handleStartChat}
+                  disabled={isStartingChat}
+                  className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-gold/15 hover:bg-gold/25 text-primary font-semibold transition-all border border-gold/30 shadow-sm"
+                >
+                  {isStartingChat ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <MessageSquare className="w-4 h-4" />
+                  )}
+                  <span>{isRtl ? 'مراسلة فورية عبر الموقع' : 'Envoyer un message'}</span>
+                </button>
+
                 {service.vendor?.phone && (
                   <a href={`tel:${service.vendor.phone}`} className="flex items-center gap-3 text-brown hover:text-primary transition-colors">
                     <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-primary">
